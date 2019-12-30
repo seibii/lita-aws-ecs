@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['notify_company_questionnaire']
   spec.description   = 'Lita handler to manage ecs'
   spec.summary       = 'Lita handler to manage ecs'
-  spec.homepage      = 'https://github.com/unhappychoice/lita-aws-cloudfront'
+  spec.homepage      = 'https://github.com/seibii/lita-aws-ecs'
   spec.license       = 'MIT'
   spec.metadata      = { 'lita_plugin_type' => 'handler' }
 
