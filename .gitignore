@@ -1,0 +1,4 @@
+# Skip local .envrc
+.bundle
+.envrc
+/vendor/bundle

@@ -1,0 +1,5 @@
+ja-JP:
+  UTF-8:
+    lita:
+      template:
+        missing_template: 'missing_template'

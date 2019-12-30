@@ -1,0 +1,9 @@
+<% if @service_tasks.empty? %>
+There are no tasks.
+<% else %>
+<% @service_tasks.each do |task| %>
+--------------------------------------------------------
+name: <%= task %>
+<% end %>
+--------------------------------------------------------
+<% end %>

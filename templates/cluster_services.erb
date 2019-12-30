@@ -1,0 +1,9 @@
+<% if @cluster_services.empty? %>
+There are no services.
+<% else %>
+<% @cluster_services.each do |service| %>
+--------------------------------------------------------
+name: <%= service %>
+<% end %>
+--------------------------------------------------------
+<% end %>

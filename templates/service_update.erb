@@ -1,0 +1,10 @@
+<%if @service_update.empty?%>
+There are no services parameter.
+<% else %>
+--------------------------------------------------------
+**your update servise parameter
+update service name    : <%= @service_update.service.service_name %>
+service target cluster : <%= @service_update.service.cluster_arn  %>
+service target task    : <%= @service_update.service.task_definition  %>
+--------------------------------------------------------
+<%end %>
