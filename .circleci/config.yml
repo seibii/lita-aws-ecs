@@ -54,7 +54,7 @@ jobs:
           environment:
               RAILS_ENV: test
               COVERAGE: true
-              CODECOV_TOKEN: c8c31078-b811-4301-bd35-c36e14cfc075
+              CODECOV_TOKEN: 4d137656-ace8-424a-afc1-28e03b45b45a
           command: bundle exec rspec
 workflows:
   version: 2.1
