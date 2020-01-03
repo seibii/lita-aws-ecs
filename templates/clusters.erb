@@ -1,9 +1,10 @@
 <% if @clusters.empty? %>
 There are no clusters.
 <% else %>
-<% @clusters.each do |cluster| %>
+<% @clusters.cluster_arns.each do |cluster| %>
 --------------------------------------------------------
-name: <%= cluster %>
+<% /\// =~ cluster %>
+name: <%= $' %>
 <% end %>
 --------------------------------------------------------
 <% end %>

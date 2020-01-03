@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'aws-sdk-ecs'
+require 'pry'
 
 module Lita
   module Handlers
@@ -19,7 +20,7 @@ module Lita
       end
 
       cluster_services_help = { 'ecs cluster services ${cluster_name}' => 'List ecs cluster services' }
-      route(/ecs cluster services\s+([a-zA-Z0-9]+)\s*$/, help: cluster_services_help) do |response|
+      route(/ecs cluster services\s+([a-zA-Z0-9 -~]+)\s*$/, help: cluster_services_help) do |response|
         cluster_name = response.matches.first[0]
         cluster_services = client.list_services(cluster: cluster_name)
         response.reply(render_template('cluster_services', cluster_services: cluster_services))
@@ -29,7 +30,7 @@ module Lita
       end
 
       cluster_tasks_help = { 'ecs cluster tasks ${cluster_name}' => 'List ecs cluster tasks' }
-      route(/ecs cluster tasks\s+([a-zA-Z0-9]+)\s*$/, help: cluster_tasks_help) do |response|
+      route(/ecs cluster tasks\s+([a-zA-Z0-9 -~]+)\s*$/, help: cluster_tasks_help) do |response|
         cluster_name = response.matches.first[0]
         cluster_tasks = client.list_tasks(
           cluster: cluster_name
@@ -40,8 +41,10 @@ module Lita
         response.reply e.to_s
       end
 
-      cluster_service_tasks_help = { 'ecs cluster service tasks ${cluster_name} ${service_name}' => 'List ecs cluster service tasks' }
-      route(/ecs cluster service tasks\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)\s*$/, help: cluster_service_tasks_help) do |response|
+      cluster_service_tasks_help =
+        { 'ecs cluster service tasks ${cluster_name} ${service_name}' => 'List ecs cluster service tasks' }
+      route(/ecs cluster service tasks\s+([a-zA-Z0-9 -~]+)\s+([a-zA-Z0-9 -~]+)\s*$/,
+            help: cluster_service_tasks_help) do |response|
         cluster_name = response.matches.first[0]
         service_name = response.matches.first[1]
         service_tasks = service_tasks_array(cluster_name, service_name)
@@ -51,8 +54,10 @@ module Lita
         response.reply e.to_s
       end
 
-      clusters_service_update_help = { 'ecs cluster service update ${service_name} ${task_name} ${task_revision}' => 'Update ecs service' }
-      route(/ecs cluster service update\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)\s+([0-9]+)\s*$/, help: clusters_service_update_help) do |response|
+      clusters_service_update_help =
+        { 'ecs cluster service update ${service_name} ${task_name} ${task_revision}' => 'Update ecs service' }
+      route(/ecs cluster service update\s+([a-zA-Z0-9 -~]+)\s+([a-zA-Z0-9 -~]+)\s+([0-9]+)\s*$/,
+            help: clusters_service_update_help) do |response|
         service_name = response.matches.first[0]
         task_name = response.matches.first[1]
         revision = response.matches.first[2]
@@ -69,7 +74,7 @@ module Lita
         response.reply e.to_s
       end
 
-      private def service_tasks_array(cluster_name, service_name)
+      private def service_tasks_array(cluster_name, service_name) # rubocop:disable Metrics/MethodLength
         describe_services = client.describe_services(
           cluster: cluster_name,
           services: [

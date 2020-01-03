@@ -33,7 +33,12 @@ describe Lita::Handlers::AwsEcs, lita_handler: true do # rubocop:disable Metrics
       end
 
       context 'with clusters response' do
-        let(:ecs_response) { ['cluster_name'] }
+        let(:ecs_response) do
+          JSON.parse(
+            { cluster_arns: ['/cluster_name'] }
+            .to_json, object_class: OpenStruct
+          )
+        end
         let(:reply_message) do
           <<~MESSAGE
             --------------------------------------------------------
@@ -73,7 +78,12 @@ describe Lita::Handlers::AwsEcs, lita_handler: true do # rubocop:disable Metrics
       end
 
       context 'with cluster services response' do
-        let(:ecs_response) { ['service_name'] }
+        let(:ecs_response) do
+          JSON.parse(
+            { service_arns: ['/service_name'] }
+            .to_json, object_class: OpenStruct
+          )
+        end
         let(:reply_message) do
           <<~MESSAGE
             --------------------------------------------------------
@@ -111,7 +121,12 @@ describe Lita::Handlers::AwsEcs, lita_handler: true do # rubocop:disable Metrics
       end
 
       context 'with cluster tasks response' do
-        let(:ecs_response) { ['task_name'] }
+        let(:ecs_response) do
+          JSON.parse(
+            { task_arns: ['/task_name'] }
+            .to_json, object_class: OpenStruct
+          )
+        end
         let(:reply_message) do
           <<~MESSAGE
             --------------------------------------------------------
@@ -151,7 +166,7 @@ describe Lita::Handlers::AwsEcs, lita_handler: true do # rubocop:disable Metrics
       context 'with cluster service tasks response' do
         let(:ecs_response) do
           JSON.parse(
-            { services: [{ task_definition: 'service_name' }] }
+            { services: [{ task_definition: '/service_name' }] }
             .to_json, object_class: OpenStruct
           )
         end
