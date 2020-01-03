@@ -7,7 +7,7 @@ describe Lita::Handlers::AwsEcs, lita_handler: true do # rubocop:disable Metrics
     it { is_expected.to route('ecs cluster services cluster') }
     it { is_expected.to route('ecs cluster tasks cluster') }
     it { is_expected.to route('ecs cluster service tasks cluster service') }
-    it { is_expected.to route('ecs cluster service update service task 1') }
+    it { is_expected.to route('ecs cluster service update cluster service task 1') }
   end
 
   describe 'Behavior' do # rubocop:disable Metrics/BlockLength
@@ -196,7 +196,7 @@ describe Lita::Handlers::AwsEcs, lita_handler: true do # rubocop:disable Metrics
       before do
         allow_any_instance_of(Aws::ECS::Client)
           .to receive_message_chain(:update_service) { ecs_response }
-        send_message 'ecs cluster service update service task 1'
+        send_message 'ecs cluster service update cluster service task 1'
       end
 
       context 'with empty clusters service updat response' do

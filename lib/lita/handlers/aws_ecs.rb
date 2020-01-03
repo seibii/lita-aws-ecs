@@ -5,7 +5,7 @@ require 'pry'
 
 module Lita
   module Handlers
-    class AwsEcs < Handler
+    class AwsEcs < Handler # rubocop:disable Metrics/ClassLength
       config :aws_region
       config :aws_access_key_id
       config :aws_secret_access_key
@@ -54,17 +54,38 @@ module Lita
         response.reply e.to_s
       end
 
+      cluster_service_tasks_help =
+        { 'ecs cluster component ${cluster_name}' => 'List cluster service name and task definition' }
+      route(/ecs cluster component\s+([a-zA-Z0-9 -~]+)\s*$/,
+            help: cluster_service_tasks_help) do |response|
+        cluster_name = response.matches.first[0]
+        services = client.list_services(cluster: cluster_name)
+
+        cluster_component = {}
+        services.service_arns.each do |service|
+          cluster_component[service] = service_tasks_array(cluster_name, service)
+        end
+
+        response
+          .reply(render_template(
+                   'cluster_component',
+                   cluster_name: cluster_name,
+                   cluster_component: cluster_component
+                 ))
+      rescue StandardError => e
+        response.reply ':rage: Error has occurred'
+        response.reply e.to_s
+      end
+
       clusters_service_update_help =
-        { 'ecs cluster service update ${service_name} ${task_name} ${task_revision}' => 'Update ecs service' }
-      route(/ecs cluster service update\s+([a-zA-Z0-9 -~]+)\s+([a-zA-Z0-9 -~]+)\s+([0-9]+)\s*$/,
+        { 'ecs cluster service update ${cluster_name} ${service_name} ${task_name}' => 'Update ecs service' }
+      route(/ecs cluster service update\s+([a-zA-Z0-9 -~]+)\s+([a-zA-Z0-9 -~]+)\s+([a-zA-Z0-9 -~]+)\s*$/,
             help: clusters_service_update_help) do |response|
-        service_name = response.matches.first[0]
-        task_name = response.matches.first[1]
-        revision = response.matches.first[2]
-        task_name = client.list_task_definitions(
-          family_prefix: task_name
-        ).task_definition_arns[revision.to_i - 1]
+        cluster_name = response.matches.first[0]
+        service_name = response.matches.first[1]
+        task_name = response.matches.first[2]
         service_update = client.update_service(
+          cluster: cluster_name,
           service: service_name,
           task_definition: task_name
         )
