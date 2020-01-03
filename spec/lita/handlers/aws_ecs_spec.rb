@@ -7,6 +7,7 @@ describe Lita::Handlers::AwsEcs, lita_handler: true do # rubocop:disable Metrics
     it { is_expected.to route('ecs cluster services cluster') }
     it { is_expected.to route('ecs cluster tasks cluster') }
     it { is_expected.to route('ecs cluster service tasks cluster service') }
+    it { is_expected.to route('ecs cluster component cluster') }
     it { is_expected.to route('ecs cluster service update cluster service task 1') }
   end
 
@@ -166,14 +167,14 @@ describe Lita::Handlers::AwsEcs, lita_handler: true do # rubocop:disable Metrics
       context 'with cluster service tasks response' do
         let(:ecs_response) do
           JSON.parse(
-            { services: [{ task_definition: '/service_name' }] }
+            { services: [{ task_definition: '/task_name' }] }
             .to_json, object_class: OpenStruct
           )
         end
         let(:reply_message) do
           <<~MESSAGE
             --------------------------------------------------------
-            name: service_name
+            name: task_name
             --------------------------------------------------------
           MESSAGE
         end
@@ -187,6 +188,57 @@ describe Lita::Handlers::AwsEcs, lita_handler: true do # rubocop:disable Metrics
             .to receive_message_chain(:update_service).and_raise(StandardError)
         end
 
+        let(:reply_message) { ':rage: Error has occurred' }
+        it_behaves_like 'a command that replies message'
+      end
+    end
+
+    describe 'clusters component command' do # rubocop:disable Metrics/BlockLength
+      before do
+        allow_any_instance_of(Aws::ECS::Client)
+          .to receive_messages(list_services: services, describe_services: ecs_response)
+        send_message 'ecs cluster component cluster'
+      end
+
+      context 'with empty cluster component response' do
+        let(:services) {}
+        let(:ecs_response) { [] }
+        let(:reply_message) { "There are no cluster.\n" }
+
+        it_behaves_like 'a command that replies message'
+      end
+
+      context 'with cluster component response' do
+        let!(:services) do
+          JSON.parse(
+            { service_arns: ['/service_name'] }
+            .to_json, object_class: OpenStruct
+          )
+        end
+        let!(:ecs_response) do
+          JSON.parse(
+            { services: [{ task_definition: '/task_name' }] }
+            .to_json, object_class: OpenStruct
+          )
+        end
+        let(:reply_message) do
+          <<~MESSAGE
+            --------------------------------------------------------
+            name: cluster service_name task_name
+            --------------------------------------------------------
+          MESSAGE
+        end
+
+        it_behaves_like 'a command that replies message'
+      end
+
+      context 'when something raises error' do
+        before do
+          allow_any_instance_of(Aws::ECS::Client)
+            .to receive_message_chain(:describe_services).and_raise(StandardError)
+        end
+        let(:services) { 'example' }
+        let(:ecs_response) { 'example' }
         let(:reply_message) { ':rage: Error has occurred' }
         it_behaves_like 'a command that replies message'
       end

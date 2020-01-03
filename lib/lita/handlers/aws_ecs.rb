@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'aws-sdk-ecs'
-require 'pry'
 
 module Lita
   module Handlers
@@ -60,18 +59,17 @@ module Lita
             help: cluster_service_tasks_help) do |response|
         cluster_name = response.matches.first[0]
         services = client.list_services(cluster: cluster_name)
-
         cluster_component = {}
-        services.service_arns.each do |service|
+        services&.service_arns&.each do |service|
           cluster_component[service] = service_tasks_array(cluster_name, service)
         end
-
         response
           .reply(render_template(
                    'cluster_component',
                    cluster_name: cluster_name,
                    cluster_component: cluster_component
                  ))
+
       rescue StandardError => e
         response.reply ':rage: Error has occurred'
         response.reply e.to_s

@@ -2,7 +2,7 @@
 There are no cluster.
 <% else %>
 <% @cluster_component.each do |service, tasks| %>
-  <% tasks.each do |task| %>
+<% tasks.each do |task| %>
 --------------------------------------------------------
 <% service = service.match(/\//)%>
 <% task = task.match(/\//)%>
