@@ -1,9 +1,9 @@
-# lita-aws-cloudfront
+# lita-aws-ecs
 [![Gem Version](https://badge.fury.io/rb/lita-aws-ecs.svg)](https://badge.fury.io/rb/lita-aws-ecs)
 [![Circle CI](https://circleci.com/gh/seibii/lita-aws-ecs.svg?style=shield)](https://circleci.com/gh/seibii/lita-aws-ecs)
 [![Code Climate](https://codeclimate.com/github/seibii/lita-aws-ecs/badges/gpa.svg)](https://codeclimate.com/github/seibii/lita-aws-ecs)
 [![codecov](https://codecov.io/gh/seibii/lita-aws-ecs/branch/master/graph/badge.svg)](https://codecov.io/gh/seibii/lita-aws-ecs)
-[![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/seibii/lita-aws-cloudfront.svg)](https://libraries.io/github/seibii/lita-aws-ecs)
+[![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/seibii/lita-aws-ecs.svg)](https://libraries.io/github/seibii/lita-aws-ecs)
 ![](http://ruby-gem-downloads-badge.herokuapp.com/lita-aws-ecs?type=total)
 ![GitHub](https://img.shields.io/github/license/seibii/lita-aws-ecs.svg)
 
@@ -29,8 +29,8 @@ AWS_SECRET_ACCESS_KEY=xxxx
 or use config
 
 ```
-Lita.config.handlers.aws_cloudfront.aws_region = 'us-east-1'
-Lita.config.handlers.aws_cloudfront.aws_access_key_id = 'xxxx'
+Lita.config.handlers.aws_ecs.aws_region = 'us-east-1'
+Lita.config.handlers.aws_ecs.aws_access_key_id = 'xxxx'
 Lita.config.handlers.aws_cloudfront.aws_secret_access_key = 'xxxx'
 ```
 
