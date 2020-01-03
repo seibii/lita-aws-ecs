@@ -31,7 +31,7 @@ or use config
 ```
 Lita.config.handlers.aws_ecs.aws_region = 'us-east-1'
 Lita.config.handlers.aws_ecs.aws_access_key_id = 'xxxx'
-Lita.config.handlers.aws_cloudfront.aws_secret_access_key = 'xxxx'
+Lita.config.handlers.aws_ecs.aws_secret_access_key = 'xxxx'
 ```
 
 ## Usage
