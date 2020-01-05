@@ -4,7 +4,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'lita-aws-ecs'
   spec.version       = '0.1.0'
   spec.authors       = ['Teturo Nakamura']
-  spec.email         = ['notify_company_questionnaire']
+  spec.email         = ['seibii.it@seibii.com']
   spec.description   = 'Lita handler to manage ecs'
   spec.summary       = 'Lita handler to manage ecs'
   spec.homepage      = 'https://github.com/seibii/lita-aws-ecs'
