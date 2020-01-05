@@ -4,7 +4,7 @@ require 'aws-sdk-ecs'
 
 module Lita
   module Handlers
-    class AwsEcs < Handler # rubocop:disable Metrics/ClassLength
+    class AwsEcs < Handler
       config :aws_region
       config :aws_access_key_id
       config :aws_secret_access_key
@@ -21,8 +21,12 @@ module Lita
       cluster_services_help = { 'ecs cluster services ${cluster_name}' => 'List ecs cluster services' }
       route(/ecs cluster services\s+([a-zA-Z0-9 -~]+)\s*$/, help: cluster_services_help) do |response|
         cluster_name = response.matches.first[0]
-        cluster_services = client.list_services(cluster: cluster_name)
-        response.reply(render_template('cluster_services', cluster_services: cluster_services))
+        services = client.list_services(cluster: cluster_name)
+          &.service_arns
+          &.map { |service| [service, service_tasks(cluster_name, service)] }
+          &.to_h || {}
+
+        response.reply(render_template('cluster_services', cluster_name: cluster_name, services: services))
       rescue StandardError => e
         response.reply ':rage: Error has occurred'
         response.reply e.to_s
@@ -46,68 +50,38 @@ module Lita
             help: cluster_service_tasks_help) do |response|
         cluster_name = response.matches.first[0]
         service_name = response.matches.first[1]
-        service_tasks = service_tasks_array(cluster_name, service_name)
+        service_tasks = service_tasks(cluster_name, service_name)
         response.reply(render_template('service_tasks', service_tasks: service_tasks))
       rescue StandardError => e
         response.reply ':rage: Error has occurred'
         response.reply e.to_s
       end
 
-      cluster_service_tasks_help =
-        { 'ecs cluster component ${cluster_name}' => 'List cluster service name and task definition' }
-      route(/ecs cluster component\s+([a-zA-Z0-9 -~]+)\s*$/,
-            help: cluster_service_tasks_help) do |response|
-        cluster_name = response.matches.first[0]
-        services = client.list_services(cluster: cluster_name)
-        cluster_component = {}
-        services&.service_arns&.each do |service|
-          cluster_component[service] = service_tasks_array(cluster_name, service)
-        end
-        response
-          .reply(render_template(
-                   'cluster_component',
-                   cluster_name: cluster_name,
-                   cluster_component: cluster_component
-                 ))
-
-      rescue StandardError => e
-        response.reply ':rage: Error has occurred'
-        response.reply e.to_s
-      end
-
       clusters_service_update_help =
-        { 'ecs cluster service update ${cluster_name} ${service_name} ${task_name}' => 'Update ecs service' }
-      route(/ecs cluster service update\s+([a-zA-Z0-9 -~]+)\s+([a-zA-Z0-9 -~]+)\s+([a-zA-Z0-9 -~]+)\s*$/,
+        { 'ecs cluster service update_task ${cluster_name} ${service_name} ${task_name}' => 'Update ecs service' }
+      route(/ecs cluster service update_task\s+([a-zA-Z0-9 -~]+)\s+([a-zA-Z0-9 -~]+)\s+([a-zA-Z0-9 -~]+)\s*$/,
             help: clusters_service_update_help) do |response|
         cluster_name = response.matches.first[0]
         service_name = response.matches.first[1]
         task_name = response.matches.first[2]
-        service_update = client.update_service(
+        client.update_service(
           cluster: cluster_name,
           service: service_name,
           task_definition: task_name
         )
-        response.reply(render_template('service_update', service_update: service_update))
+        response.reply("Updated #{service_name} task to #{task_name} successfully.")
       rescue StandardError => e
         response.reply ':rage: Error has occurred'
         response.reply e.to_s
       end
 
-      private def service_tasks_array(cluster_name, service_name) # rubocop:disable Metrics/MethodLength
+      private def service_tasks(cluster_name, service_name)
         describe_services = client.describe_services(
           cluster: cluster_name,
-          services: [
-            service_name
-          ]
+          services: [service_name]
         )
 
-        describe_service_tasks = []
-        unless describe_services.nil?
-          describe_services.services.each do |describe_service|
-            describe_service_tasks.push(describe_service.task_definition)
-          end
-        end
-        describe_service_tasks
+        describe_services&.services&.map(&:task_definition) || []
       end
 
       private def client
@@ -117,6 +91,7 @@ module Lita
           secret_access_key: config.aws_secret_access_key || ENV['AWS_SECRET_ACCESS_KEY']
         )
       end
+
       Lita.register_handler(self)
     end
   end

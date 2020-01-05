@@ -1,10 +1,14 @@
-<% if @cluster_services.empty? %>
+<% if @services.empty? %>
 There are no services.
 <% else %>
-<% @cluster_services.service_arns.each do |service| %>
+<% @services.each do |service, tasks| %>
+<% tasks.sort.each do |task| %>
 --------------------------------------------------------
-<% /\// =~ service %>
-name: <%= $' %>
+<% service = service.match(/\//)%>
+<% task = task.match(/\//)%>
+service_name:  <%= "#{service.post_match}" %>
+attached_task: <%= "#{task.post_match}" %>
+--------------------------------------------------------
 <% end %>
---------------------------------------------------------
+<% end %>
 <% end %>
