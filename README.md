@@ -41,8 +41,7 @@ lita ecs clusters
 lita ecs cluster services ${cluster_name}
 lita ecs cluster tasks ${cluster_name}
 lita ecs service tasks ${service_name}
-lita ecs cluster component ${cluster_name}
-lita ecs service update ${cluster_name} ${service_name} ${task_name:revision}
+lita ecs service update_task ${cluster_name} ${service_name} ${task_name:revision}
 ```
 
 ## Contributing
