@@ -1,7 +1,7 @@
 <% if @cluster_tasks.empty? %>
 There are no tasks.
 <% else %>
-<% @cluster_tasks.task_arns.each do |task| %>
+<% @cluster_tasks.task_arns.sort.each do |task| %>
 --------------------------------------------------------
 <% /\// =~ task %>
 name: <%= $' %>

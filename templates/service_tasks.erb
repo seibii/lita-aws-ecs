@@ -1,7 +1,7 @@
 <% if @service_tasks.empty? %>
 There are no tasks.
 <% else %>
-<% @service_tasks.each do |task| %>
+<% @service_tasks.sort.each do |task| %>
 --------------------------------------------------------
 <% /\// =~ task %>
 name: <%= $' %>
