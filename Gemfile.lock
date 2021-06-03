@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lita-aws-ecs (1.0.0)
+    lita-aws-ecs (1.0.1)
       aws-sdk-ecs (~> 1)
       lita (>= 4.7)
 
@@ -11,12 +11,12 @@ GEM
     ast (2.4.2)
     aws-eventstream (1.1.1)
     aws-partitions (1.465.0)
-    aws-sdk-core (3.114.0)
+    aws-sdk-core (3.114.1)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
-    aws-sdk-ecs (1.79.0)
+    aws-sdk-ecs (1.80.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.2.3)
@@ -172,4 +172,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-   2.0.2
+   2.1.4

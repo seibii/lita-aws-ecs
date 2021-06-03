@@ -2,9 +2,9 @@
 
 Gem::Specification.new do |spec|
   spec.name          = 'lita-aws-ecs'
-  spec.version       = '1.0.0'
+  spec.version       = '1.0.1'
   spec.required_ruby_version = '>= 2.6'
-  spec.authors       = ['Teturo Nakamura']
+  spec.authors       = ['Seibii']
   spec.email         = ['seibii.it@seibii.com']
   spec.description   = 'Lita handler to manage ecs'
   spec.summary       = 'Lita handler to manage ecs'

@@ -8,7 +8,6 @@ updates:
     timezone: Asia/Tokyo
   open-pull-requests-limit: 20
   reviewers:
-  - avexbesuke
   - amatotsuji
   - yuta-sanada0089
   allow:
